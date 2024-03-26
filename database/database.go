@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"os"
 
 	// Driver for SQLite3 database
 	_ "github.com/mattn/go-sqlite3"
@@ -10,15 +11,24 @@ import (
 var db *sql.DB
 
 func init() {
-	database, err := sql.Open("sqlite3", `../game.db`)
-	treatError(err)
-	db = database
-}
+	dbPath := `../game.db`
 
-func treatError(err error) {
+	// Verifica se o arquivo do banco de dados existe
+	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		// Se não existir, cria o arquivo
+		file, err := os.Create(dbPath)
+		if err != nil {
+			panic(err)
+		}
+		file.Close()
+	}
+
+	// Abre a conexão com o banco de dados
+	database, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		panic(err)
 	}
+	db = database
 }
 
 func ExecSql(sqlQuery string, args ...any) (*sql.Rows, error) {

@@ -1,0 +1,4 @@
+github.com/carlosartur/adventure-game/database v0.0.0-20240326183603-6a6811edd91d h1:4BQEYT2qnrSisBv1exETqr09gVK2jsaUzfAUcLm0vOY=
+github.com/carlosartur/adventure-game/database v0.0.0-20240326183603-6a6811edd91d/go.mod h1:QE6HpHesB8/eW58VfqH8PGJFkVzBxwO3GCL/auWkxKk=
+github.com/mattn/go-sqlite3 v1.14.22 h1:2gZY6PC6kBnID23Tichd1K+Z0oS6nE/XwU+Vz/5o4kU=
+github.com/mattn/go-sqlite3 v1.14.22/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=

@@ -20,20 +20,42 @@ func RunMigrations() {
 		var count int
 
 		fmt.Println("Running migration #", migration.Number)
+		fmt.Println(23)
+
+		if migration.Number == 0 {
+			_, err = db.Exec(migration.Query)
+
+			if err != nil {
+				log.Printf("%q: %s\n", err, migration.Query)
+				fmt.Println(30)
+
+				return
+			}
+			fmt.Println(34)
+
+			continue
+		}
 
 		err = db.QueryRow(
 			fmt.Sprintf(`SELECT COUNT(*) FROM migrations WHERE number = '%d';`, migration.Number),
 		).Scan(&count)
 
 		if err != nil {
+			fmt.Println(fmt.Sprintf(`%v`, err))
 			return
 		}
+
+		res, err := db.Exec(`SELECT * FROM sqlite_master WHERE type='table'`)
+
+		fmt.Println(res, err)
 
 		if count > 0 {
 			continue
 		}
 
 		_, err = db.Exec(migration.Query)
+
+		fmt.Println(56)
 
 		if err != nil {
 			log.Printf("%q: %s\n", err, migration.Query)
@@ -43,6 +65,8 @@ func RunMigrations() {
 		_, err = db.Exec(
 			fmt.Sprintf(`INSERT INTO migrations (number) VALUES ('%d');`, migration.Number),
 		)
+
+		fmt.Println(66)
 
 		if err != nil {
 			log.Printf("%q: %s\n", err, migration.Query)

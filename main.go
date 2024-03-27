@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/carlosartur/adventure-game/database/database"
+	"adventure-game/database"
 )
 
 // install

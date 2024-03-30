@@ -11,9 +11,12 @@ import (
 var db *sql.DB
 
 func init() {
-	dbPath := `../game.db`
+	connect()
+}
 
-	// Verifica se o arquivo do banco de dados existe
+func connect() {
+	dbPath := `./game.db`
+
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
 		// Se não existir, cria o arquivo
 		file, err := os.Create(dbPath)
@@ -47,5 +50,17 @@ func ExecSql(sqlQuery string, args ...any) (*sql.Rows, error) {
 }
 
 func GetDB() *sql.DB {
+	if db == nil {
+		connect()
+		return db	
+	}
+
+	if err := db.Ping(); err != nil {
+		if err := db.Close(); err != nil {
+			panic(err)
+		}
+		connect()
+	}
+
 	return db
 }

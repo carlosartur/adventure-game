@@ -4,17 +4,22 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"x/database"
+
+	"adventure-game/database"
 )
 
 type Player struct {
 	Model
-	Name       string
-	Hability   int
-	Luck       int
-	Energy     int
-	Provisions int
-	Items      []Item
+	Name            string
+	Hability        int
+	Luck            int
+	Energy          int
+	Provisions      int
+	InitialHability int
+	InitialLuck     int
+	InitialEnergy   int
+	Paragraph       int
+	Items           []Item
 }
 
 func (_ Player) GetTableName() string {
@@ -56,7 +61,7 @@ func (p Player) Retrieve() []Player {
 		return nil
 	}
 
-	err, list := p.BuildResponse(response)
+	list, err := p.BuildResponse(response)
 
 	if err != nil {
 		fmt.Println("Erro ao obter item.")
@@ -70,19 +75,33 @@ func (p Player) Delete() {
 	p.Model.Delete(p.GetTableName(), p.Id)
 }
 
-func (p Player) BuildResponse(rows *sql.Rows) (error, []Player) {
+func (p Player) BuildResponse(rows *sql.Rows) ([]Player, error) {
 	var response []Player
 
 	for rows.Next() {
 		var newPlayer Player
-		if err := rows.Scan(&newPlayer.Id, &newPlayer.Name, &newPlayer.Hability, &newPlayer.Luck, &newPlayer.Energy, &newPlayer.Provisions); err != nil {
+
+		err := rows.Scan(
+			&newPlayer.Id,
+			&newPlayer.Name,
+			&newPlayer.Hability,
+			&newPlayer.Luck,
+			&newPlayer.Energy,
+			&newPlayer.Provisions,
+			&newPlayer.InitialHability,
+			&newPlayer.InitialLuck,
+			&newPlayer.InitialEnergy,
+			&newPlayer.Paragraph,
+		)
+
+		if err != nil {
 			log.Fatal(err)
 
-			return err, nil
+			return nil, err
 		}
 
 		response = append(response, newPlayer)
 	}
 
-	return nil, response
+	return response, nil
 }

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/carlosartur/adventure-game/database"
+	"adventure-game/database"
 )
 
 type Item struct {

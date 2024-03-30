@@ -2,7 +2,8 @@ package models
 
 import (
 	"log"
-	"x/database"
+
+	"adventure-game/database"
 )
 
 type Model struct {
@@ -19,12 +20,27 @@ func (m *Model) Create(tableName string, params ...interface{}) int {
 	}
 	query += ")"
 
-	res, err := database.ExecSql(query, params...)
+	_, err := database.ExecSql(query, params...)
 	if err != nil {
 		log.Fatal("Erro ao tentar executar query de inserção:", err)
 	}
-	id, _ := res.LastInsertId()
+
+	
+	id := m.LastInsertId(tableName)
 	return int(id)
+}
+
+func (m *Model) LastInsertId(tableName string) int {
+	query := "SELECT seq FROM sqlite_sequence WHERE name = '"+tableName+"';"
+	row, err := database.ExecSql(query)
+	
+	if !row.Next() || err != nil {
+		return 0
+	}
+
+	var seq int
+	row.Scan(&seq)
+	return seq
 }
 
 func (m *Model) Update(tableName string, id int, params ...interface{}) {

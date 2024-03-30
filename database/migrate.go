@@ -19,19 +19,14 @@ func RunMigrations() {
 		var err error
 		var count int
 
-		fmt.Println("Running migration #", migration.Number)
-		fmt.Println(23)
-
 		if migration.Number == 0 {
 			_, err = db.Exec(migration.Query)
 
 			if err != nil {
 				log.Printf("%q: %s\n", err, migration.Query)
-				fmt.Println(30)
 
 				return
 			}
-			fmt.Println(34)
 
 			continue
 		}
@@ -45,17 +40,13 @@ func RunMigrations() {
 			return
 		}
 
-		res, err := db.Exec(`SELECT * FROM sqlite_master WHERE type='table'`)
-
-		fmt.Println(res, err)
-
 		if count > 0 {
 			continue
 		}
 
-		_, err = db.Exec(migration.Query)
+		fmt.Println("Running migration #", migration.Number)
 
-		fmt.Println(56)
+		_, err = db.Exec(migration.Query)
 
 		if err != nil {
 			log.Printf("%q: %s\n", err, migration.Query)
@@ -65,8 +56,6 @@ func RunMigrations() {
 		_, err = db.Exec(
 			fmt.Sprintf(`INSERT INTO migrations (number) VALUES ('%d');`, migration.Number),
 		)
-
-		fmt.Println(66)
 
 		if err != nil {
 			log.Printf("%q: %s\n", err, migration.Query)
@@ -90,12 +79,17 @@ func getMigrations() []Migration {
 			);`},
 		{Number: 2, Query: `
 			CREATE TABLE IF NOT EXISTS player (
-				id         INTEGER PRIMARY KEY AUTOINCREMENT,
-				name       TEXT,
-				hability   INTEGER,
-				luck       INTEGER,
-				energy     INTEGER,
-				provisions INTEGER
+				id               INTEGER PRIMARY KEY AUTOINCREMENT,
+				name             TEXT,
+				paragraph_id     INTEGER,
+				hability         INTEGER,
+				luck             INTEGER,
+				energy           INTEGER,
+				initial_hability INTEGER,
+				initial_luck     INTEGER,
+				initial_energy   INTEGER,
+				provisions       INTEGER,
+				FOREIGN KEY(paragraph_id) REFERENCES paragraph(id)
 			);`},
 		{Number: 3, Query: `
 			CREATE TABLE IF NOT EXISTS player_items (

@@ -106,11 +106,11 @@ func getMigrations() []Migration {
 			);`},
 		{Number: 5, Query: `
 			CREATE TABLE IF NOT EXISTS paragraph_option (
-				paragraph_origin              INTEGER,
-				paragraph_detiny              INTEGER,
-				FOREIGN KEY(paragraph_origin) REFERENCES paragraph(id),
-				FOREIGN KEY(paragraph_detiny) REFERENCES paragraph(id),
-				PRIMARY KEY(paragraph_origin, paragraph_detiny)
+				paragraph_origin               INTEGER,
+				paragraph_destiny              INTEGER,
+				FOREIGN KEY(paragraph_origin)  REFERENCES paragraph(id),
+				FOREIGN KEY(paragraph_destiny) REFERENCES paragraph(id),
+				PRIMARY KEY(paragraph_origin, paragraph_destiny)
 			);`},
 	}
 }

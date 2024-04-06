@@ -12,7 +12,7 @@ type Item struct {
 	Name string
 }
 
-func (_ Item) GetTableName() string {
+func (Item) GetTableName() string {
 	return `item`
 }
 
@@ -22,7 +22,11 @@ func (i Item) Create() Item {
 }
 
 func (i Item) Update() Item {
-	i.Model.Update("Item", i.Id, i.Name)
+	params := map[string]interface{}{
+		"name": i.Name,
+	}
+
+	i.Model.Update("Item", i.Id, params)
 	return i
 }
 

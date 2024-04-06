@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"os"
+	"strings"
 
 	// Driver for SQLite3 database
 	_ "github.com/mattn/go-sqlite3"
@@ -43,9 +44,17 @@ func ExecSql(sqlQuery string, args ...any) (*sql.Rows, error) {
 	}
 
 	defer stmt.Close()
+	defer db.Close()
 
+	if strings.Contains(sqlQuery, "INSERT") || strings.Contains(sqlQuery, "UPDATE") {
+		_, err := stmt.Exec(args...)
+		if err != nil {
+			return nil, err
+		}
+		return nil, nil
+	} 
+	
 	rows, err := stmt.Query(args...)
-
 	return rows, err
 }
 

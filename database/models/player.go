@@ -22,7 +22,7 @@ type Player struct {
 	Items           []Item
 }
 
-func (_ Player) GetTableName() string {
+func (Player) GetTableName() string {
 	return `player`
 }
 
@@ -30,9 +30,13 @@ func (p Player) Create() Player {
 	p.Id = p.Model.Create(
 		p.GetTableName(),
 		p.Name,
+		p.Paragraph,
 		p.Hability,
 		p.Luck,
 		p.Energy,
+		p.InitialHability,
+		p.InitialLuck,
+		p.InitialEnergy,
 		p.Provisions,
 	)
 
@@ -40,14 +44,23 @@ func (p Player) Create() Player {
 }
 
 func (p Player) Update() Player {
+
+	params := map[string]interface{}{
+		"name":             p.Name,
+		"paragraph_id":   	p.Paragraph,
+		"hability":   	    p.Hability,
+		"luck":   	        p.Luck,
+		"energy":   	    p.Energy,
+		"initial_hability": p.InitialHability,
+		"initial_luck":   	p.InitialLuck,
+		"initial_energy":   p.InitialEnergy,
+		"provisions":   	p.Provisions,
+	}
+
 	p.Model.Update(
 		p.GetTableName(),
 		p.Id,
-		p.Name,
-		p.Hability,
-		p.Luck,
-		p.Energy,
-		p.Provisions,
+		params,
 	)
 
 	return p
@@ -69,6 +82,35 @@ func (p Player) Retrieve() []Player {
 	}
 
 	return list
+}
+
+func (p Player) RetrieveOneById() Player {
+	response, err := database.ExecSql(`SELECT 
+		id, 
+		name, 
+		hability, 
+		luck, 
+		energy, 
+		provisions, 
+		initial_hability,
+		initial_luck,
+		initial_energy,
+		paragraph_id
+	FROM `+p.GetTableName()+` WHERE id = ?;`, p.Id)
+
+	if err != nil {
+		log.Fatal(err)
+		return Player{}
+	}
+
+	list, err := p.BuildResponse(response)
+
+	if err != nil || len(list) < 1 {
+		fmt.Println("Erro ao obter item.")
+		return Player{}
+	}
+
+	return list[0]
 }
 
 func (p Player) Delete() {

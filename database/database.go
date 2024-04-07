@@ -44,7 +44,6 @@ func ExecSql(sqlQuery string, args ...any) (*sql.Rows, error) {
 	}
 
 	defer stmt.Close()
-	defer db.Close()
 
 	if strings.Contains(sqlQuery, "INSERT") || strings.Contains(sqlQuery, "UPDATE") {
 		_, err := stmt.Exec(args...)
@@ -52,7 +51,7 @@ func ExecSql(sqlQuery string, args ...any) (*sql.Rows, error) {
 			return nil, err
 		}
 		return nil, nil
-	} 
+	}
 	
 	rows, err := stmt.Query(args...)
 	return rows, err
@@ -72,4 +71,12 @@ func GetDB() *sql.DB {
 	}
 
 	return db
+}
+
+func CloseDB() {
+	if db == nil {
+		return
+	}
+
+	db.Close()
 }

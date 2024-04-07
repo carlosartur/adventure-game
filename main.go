@@ -348,6 +348,9 @@ Energia INICIAL: %d`,
 	destinyParagraphInput.BorderStyle.Fg = ui.ColorYellow
 
 	updateScreen := func() {
+		currentParagraphShow.Title = fmt.Sprintf(`Parágrafo: %d`, currentParagraph.Id)
+		currentParagraphShow.Text = currentParagraph.Context
+
 		ui.Clear()
 		ui.Render(playerData, shortCuts, destinyParagraphInput, currentParagraphShow)
 	}
@@ -385,11 +388,12 @@ Energia INICIAL: %d`,
 				newParagraphId, _ := utils.ParseInt(destinyParagraphText)
 
 				destinyParagraphText = ""
+
 				updateScreen()
 				updateInput(``, false)
 				
 				p.Paragraph = newParagraphId
-				p.Update();
+				p.Update()
 			} else {
 				destinyParagraphText = ""
 				currentParagraph = currentParagraph.GetOneById(destinyParagraphText)

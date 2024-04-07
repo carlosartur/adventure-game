@@ -68,6 +68,8 @@ func (p Player) Update() Player {
 
 func (p Player) Retrieve() []Player {
 	response, err := database.ExecSql(`SELECT * FROM `+p.GetTableName()+` WHERE name LIKE ?;`, "%"+p.Name+"%")
+	
+	defer database.CloseDB()
 
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +99,8 @@ func (p Player) RetrieveOneById() Player {
 		initial_energy,
 		paragraph_id
 	FROM `+p.GetTableName()+` WHERE id = ?;`, p.Id)
+	
+	defer database.CloseDB()
 
 	if err != nil {
 		log.Fatal(err)

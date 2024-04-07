@@ -21,6 +21,8 @@ func (m *Model) Create(tableName string, params ...interface{}) int {
 	query += ")"
 
 	_, err := database.ExecSql(query, params...)
+	defer database.CloseDB()
+
 	if err != nil {
 		log.Fatal("Erro ao tentar executar query de inserção:", err)
 	}
@@ -33,7 +35,8 @@ func (m *Model) Create(tableName string, params ...interface{}) int {
 func (m *Model) LastInsertId(tableName string) int {
 	query := "SELECT seq FROM sqlite_sequence WHERE name = '"+tableName+"';"
 	row, err := database.ExecSql(query)
-	
+	defer database.CloseDB()
+
 	if !row.Next() || err != nil {
 		return 0
 	}
@@ -59,9 +62,11 @@ func (m *Model) Update(tableName string, id int, columnValues map[string]interfa
     params = append(params, id)
 
     _, err := database.ExecSql(query, params...)
+
     if err != nil {
-        log.Fatal("Erro ao tentar executar query de alteração:", err)
+		log.Fatal("Erro ao tentar executar query de alteração:", err)
     }
+	defer database.CloseDB()
 }
 
 func (m *Model) Delete(tableName string, id int) {
@@ -75,6 +80,8 @@ func (m *Model) Delete(tableName string, id int) {
 func (m *Model) GetOneById(tableName string, id int) (*sql.Rows, error) {
 	query := "SELECT * FROM " + tableName + " WHERE id = ?"
 	res, err := database.ExecSql(query, id)
+	defer database.CloseDB()
+
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

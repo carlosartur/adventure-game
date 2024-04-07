@@ -63,6 +63,7 @@ func (p Paragraph) GetOptions() []Paragraph {
 		po.paragraph_origin = ?`,
 		p.Id,
 	)
+	defer database.CloseDB()
 
 	if err != nil {
 		log.Fatal(err)

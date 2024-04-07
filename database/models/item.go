@@ -44,12 +44,14 @@ func (i Item) Retrieve() []Item {
 		fmt.Println("Erro ao obter item.")
 		return nil
 	}
+	defer database.CloseDB()
 
 	return list
 }
 
 func (i Item) Delete() {
 	i.Model.Delete(i.GetTableName(), i.Id)
+	defer database.CloseDB()
 }
 
 func (i Item) BuildResponse(rows *sql.Rows) (error, []Item) {
